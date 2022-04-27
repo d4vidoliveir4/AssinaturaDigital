@@ -1,34 +1,19 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography.Xml;
+﻿using System.Security.Cryptography.Xml;
 using System.Xml;
 
 namespace AssinaturaDigital
 {
-    public class AssinadorXml
+    public class AssinadorXml : Assinador<XmlDocument>
     {
-        private readonly string SenhaCertificado;
-        private readonly byte[] Certificado;
-        private readonly string Xml;
-
-        public AssinadorXml(byte[] certificado, string senhaCertificado, string xml)
+        public AssinadorXml(byte[] certificado, string senhaCertificado, string xml) : base(certificado, senhaCertificado, xml)
         {
-            this.Certificado = certificado; 
-            this.SenhaCertificado = senhaCertificado;
-            this.Xml = xml;
         }
 
-        private X509Certificate2 LerCertificado()
+        public override XmlDocument Assinar()
         {
-            return new X509Certificate2(Certificado,SenhaCertificado);
-        }
-
-        public XmlDocument Assinar()
-        {
-            var certificado = LerCertificado();
-            
             var documento = new XmlDocument();
             documento.LoadXml(Xml);
-            var docXml = new SignedXml(documento) { SigningKey = certificado.PrivateKey };
+            var docXml = new SignedXml(documento) { SigningKey = X509Certificado2.PrivateKey };
 
             Reference referencia = new Reference
             {
@@ -44,7 +29,7 @@ namespace AssinaturaDigital
             docXml.AddReference(referencia);
 
             var keyInfo = new KeyInfo();
-            keyInfo.AddClause(new KeyInfoX509Data(certificado));
+            keyInfo.AddClause(new KeyInfoX509Data(X509Certificado2));
 
             docXml.KeyInfo = keyInfo;
             docXml.ComputeSignature();
