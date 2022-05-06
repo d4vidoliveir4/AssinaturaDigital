@@ -1,24 +1,24 @@
-﻿using System.Security.Cryptography.Xml;
+﻿using System.IO;
+using System.Security.Cryptography.Xml;
 using System.Xml;
 
 namespace AssinaturaDigital
 {
     public class AssinadorXml : Assinador<XmlDocument>
     {
-        public AssinadorXml(byte[] certificado, string senhaCertificado, string xml) : base(certificado, senhaCertificado, xml)
+        private readonly string ArquivoParaAssinar;
+        public AssinadorXml(byte[] certificado, string senhaCertificado, string arquivoParaAssinar) : base(certificado, senhaCertificado)
         {
+            ArquivoParaAssinar = arquivoParaAssinar;
         }
 
         public override XmlDocument Assinar()
         {
             var documento = new XmlDocument();
-            documento.LoadXml(Xml);
+            documento.LoadXml(ArquivoParaAssinar);
             var docXml = new SignedXml(documento) { SigningKey = X509Certificado2.PrivateKey };
 
-            Reference referencia = new Reference
-            {
-                Uri = ""
-            };
+            Reference referencia = new Reference{Uri = ""};
 
             var envelope = new XmlDsigEnvelopedSignatureTransform();
             referencia.AddTransform(envelope);
@@ -39,8 +39,6 @@ namespace AssinaturaDigital
             documento.DocumentElement.AppendChild(documento.ImportNode(xmlDigitalSignature, true));
 
             return documento;
-        }
-
+        }        
     }
-
 }

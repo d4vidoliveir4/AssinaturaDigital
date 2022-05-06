@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
 namespace AssinaturaDigital
 {
@@ -6,14 +7,12 @@ namespace AssinaturaDigital
     {
         private readonly string SenhaCertificado;
         private readonly byte[] Certificado;
-        protected string Xml { get; private set; }
         protected X509Certificate2 X509Certificado2 { get; private set; }
 
-        public Assinador(byte[] certificado, string senhaCertificado, string xml)
+        public Assinador(byte[] certificado, string senhaCertificado)
         {
             Certificado = certificado;
             SenhaCertificado = senhaCertificado;
-            Xml = xml;
             X509Certificado2 = new X509Certificate2(Certificado, SenhaCertificado);
         }
 

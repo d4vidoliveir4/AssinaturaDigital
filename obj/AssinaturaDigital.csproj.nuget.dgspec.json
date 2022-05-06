@@ -40,6 +40,10 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "Syncfusion.Pdf.Net.Core": {
+              "target": "Package",
+              "version": "[20.1.0.51, )"
+            },
             "System.Security.Cryptography.Xml": {
               "target": "Package",
               "version": "[6.0.0, )"
